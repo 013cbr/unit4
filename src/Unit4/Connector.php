@@ -1,7 +1,7 @@
 <?php
+
 namespace Unit4;
 
-use Exception;
 use Unit4\Configuration;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
@@ -18,12 +18,11 @@ class Connector
 
     public function redirectToAuthorizationUri($redirect = true)
     {
-        $authorizationUrl = $this->configuration->getAuthorizeUri() 
-                          . '?client_id=' . rawurlencode($this->configuration->getClientId())
-                          . '&scope=' . rawurlencode($this->configuration->getScope())
-                          . '&redirect_uri=' . rawurlencode($this->configuration->getRedirectUri())
-                          . '&response_type=code'
-                          ;
+        $authorizationUrl = $this->configuration->getAuthorizeUri()
+            . '?client_id=' . rawurlencode($this->configuration->getClientId())
+            . '&scope=' . rawurlencode($this->configuration->getScope())
+            . '&redirect_uri=' . rawurlencode($this->configuration->getRedirectUri())
+            . '&response_type=code';
 
         if ($redirect) {
             header('Location: ' . $authorizationUrl);
@@ -49,28 +48,28 @@ class Connector
     {
         try {
             if (empty($code)) {
-                throw new Exception('Code ontbreekt');
+                throw new \Exception('Code ontbreekt');
             }
 
             try {
                 $parameters = [
-                    'code' => $code,
-                    'client_id' => $this->configuration->getClientId(),
+                    'code'          => $code,
+                    'client_id'     => $this->configuration->getClientId(),
                     'client_secret' => $this->configuration->getClientSecret(),
-                    'redirect_uri' => $this->configuration->getRedirectUri(),
-                    'grant_type' => 'authorization_code',
+                    'redirect_uri'  => $this->configuration->getRedirectUri(),
+                    'grant_type'    => 'authorization_code',
                 ];
 
-                $client = new Client();
+                $client   = new Client();
                 $response = $client->request('POST', $this->configuration->getAccessTokenExchangeUri(), [
                     'form_params' => $parameters,
-                    'headers' => [
+                    'headers'     => [
                         'Accept' => 'application/json',
                     ],
                 ]);
 
                 if (Response::HTTP_OK == $response->getStatusCode()) {
-                    $body = $response->getBody();
+                    $body    = $response->getBody();
                     $content = json_decode($body);
 
                     $accessToken = $content->access_token;
@@ -78,18 +77,18 @@ class Connector
                     $this->configuration->storeToken($content->refresh_token);
                     return $accessToken;        // return the temporary access token
                 } else {
-                    throw new Exception('Statuscode ' . $response->getStatusCode() . ' on ' . $this->configuration->getAccessTokenExchangeUri() . ' (' . $response->getReasonPhrase() . ')');
+                    throw new \Exception('Statuscode ' . $response->getStatusCode() . ' on ' . $this->configuration->getAccessTokenExchangeUri() . ' (' . $response->getReasonPhrase() . ')');
                 }
             } catch (RequestException $e) {
                 // usually indicates a networking error
                 throw $e;
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 throw $e;
             }
 
         } catch (IdentityProviderException $e) {
             throw $e;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw $e;
         }
     }
@@ -98,42 +97,42 @@ class Connector
     {
         try {
             if (!$this->configuration->hasToken()) {
-                throw new Exception('Refresh token ontbreekt (is de authorization grant al uitgevoerd?)');
+                throw new \Exception('Refresh token ontbreekt (is de authorization grant al uitgevoerd?)');
             }
 
-            $refreshToken = $this->configuration->retrieveToken();
+            $refreshToken = $this->configuration->getToken();
 
             $parameters = [
                 'refresh_token' => $refreshToken,
-                'client_id' => $this->configuration->getClientId(),
+                'client_id'     => $this->configuration->getClientId(),
                 'client_secret' => $this->configuration->getClientSecret(),
-                'redirect_uri' => $this->configuration->getRedirectUri(),
-                'grant_type' => 'refresh_token',
+                'redirect_uri'  => $this->configuration->getRedirectUri(),
+                'grant_type'    => 'refresh_token',
             ];
 
-            $client = new Client();
+            $client   = new Client();
             $response = $client->request('POST', $this->configuration->getAccessTokenExchangeUri(), [
                 'form_params' => $parameters,
-                'headers' => [
+                'headers'     => [
                     'Accept' => 'application/json',
                 ],
             ]);
 
             if (Response::HTTP_OK == $response->getStatusCode()) {
-                $body = $response->getBody();
+                $body    = $response->getBody();
                 $content = json_decode($body);
 
                 return $content->access_token;
             } else {
-                throw new Exception('Statuscode ' . $response->getStatusCode() . ' on ' . $this->configuration->getAccessTokenExchangeUri() . ' (' . $response->getReasonPhrase() . ')');
+                throw new \Exception('Statuscode ' . $response->getStatusCode() . ' on ' . $this->configuration->getAccessTokenExchangeUri() . ' (' . $response->getReasonPhrase() . ')');
             }
 
             return $accessToken;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             if (is_testing()) {
-                throw new Exception('AccessToken kon niet worden opgevraagd (' . $e->getMessage() . ')');
+                throw new \Exception('AccessToken kon niet worden opgevraagd (' . $e->getMessage() . ')');
             } else {
-                throw new Exception('AccessToken kon niet worden opgevraagd');
+                throw new \Exception('AccessToken kon niet worden opgevraagd');
             }
         }
     }
