@@ -1,14 +1,14 @@
 <?php
+
 namespace Unit4;
 
-use Exception;
 use GuzzleHttp\Client;
 use Symfony\Component\HttpFoundation\Response;
 
 class ApiClient
 {
     const HEADER_ENCODING_JSON = 'application/json';
-    const HEADER_ENCODING_XML = 'application/xml';          // XXX: be careful, XML handling is not implemented anywhere yet
+    const HEADER_ENCODING_XML  = 'application/xml';          // XXX: be careful, XML handling is not implemented anywhere yet
 
     /**
      * @var Client
@@ -27,12 +27,13 @@ class ApiClient
 
     /**
      * ApiClient constructor.
+     *
      * @param Client $client
      * @param string $accessToken
      */
     public function __construct(Client $client, $accessToken)
     {
-        $this->client = $client;
+        $this->client      = $client;
         $this->accessToken = $accessToken;
 
         $this->setHeaderEncoding(static::HEADER_ENCODING_JSON);
@@ -40,6 +41,7 @@ class ApiClient
 
     /**
      * @param string $headerEncoding
+     *
      * @return ApiClient
      */
     public function setHeaderEncoding($headerEncoding)
@@ -55,18 +57,18 @@ class ApiClient
             'GET',
             $url . ((!is_null($id)) ? $id : ''),
             [
-                'query' => $query,
+                'query'   => $query,
                 'headers' => [
-                    'Accept' => $this->headerEncoding,
+                    'Accept'        => $this->headerEncoding,
                     'Authorization' => 'Bearer ' . $this->accessToken,
-            ],
-            'debug' => $debug,
-        ]);
+                ],
+                'debug'   => $debug,
+            ]);
 
         if (Response::HTTP_OK == $response->getStatusCode()) {
             return $response->getBody();
         } else {
-            throw new Exception('Statuscode ' . $response->getStatusCode() . ' on ' . $url . ' (' . $response->getReasonPhrase() . ')');
+            throw new \Exception('Statuscode ' . $response->getStatusCode() . ' on ' . $url . ' (' . $response->getReasonPhrase() . ')');
         }
     }
 }
