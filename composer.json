@@ -1,0 +1,42 @@
+{
+  "name": "013cbr/unit4",
+  "type": "library",
+  "description": "PHP library for Unit4",
+  "keywords": [
+    "unit4",
+    "multivers",
+    "library"
+  ],
+  "homepage": "",
+  "license": "",
+  "authors": [
+    {
+      "name": "Jordy Verschoor",
+      "email": "jordy.verschoor@gmail.com",
+      "homepage": ""
+    }
+  ],
+  "require": {
+    "ocramius/generated-hydrator": "^1.2",
+    "symfony/http-foundation": "^3.3",
+    "guzzlehttp/guzzle": "^6.3"
+  },
+  "require-dev": {
+  },
+  "autoload": {
+    "psr-4": {
+      "Unit4\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Unit4\\Tests\\": "tests/"
+    }
+  },
+  "suggest": {
+  },
+  "extra": {
+    "branch-alias": {
+    }
+  }
+}
