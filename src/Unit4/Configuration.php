@@ -1,17 +1,24 @@
 <?php
+
 namespace Unit4;
 
-class Configuration     // todo: rewrite class so it uses a settings file or something
+class Configuration
 {
-    const API_VERSION_NUMBER = 'v191';
-    const DATABASE = 'MVLXXXXX';
-    const TOKEN_FILE = 'refreshtoken.tkn';
+    private $clientId = '';
+    private $clientSecret = '';
+    private $database = '';
+    private $apiVersion = '';
+    private $token = '';
+    private $debug = false;
 
-    protected $debug = false;
-
-    public function __construct($debug = false)
+    public function __construct($clientId, $clientSecret, $database, $apiVersion = 'v191', $token = '', $debug = false)
     {
-        $this->debug = $debug;
+        $this->clientId     = $clientId;
+        $this->clientSecret = $clientSecret;
+        $this->database     = $database;
+        $this->apiVersion   = $apiVersion;
+        $this->token        = $token;
+        $this->debug        = $debug;
     }
 
     public function setDebug($debug)
@@ -20,34 +27,17 @@ class Configuration     // todo: rewrite class so it uses a settings file or som
         return $this;
     }
 
-    public function getClientId()
-    {
-        if ($this->debug) {
-            return '';
-        }
-
-        return '';
-    }
-
-    public function getClientSecret()
-    {
-        if ($this->debug) {
-            return '';
-        }
-
-        return '';
-    }
-
     public function getApiUri()
     {
         if ($this->debug) {
-            return 'https://sandbox.api.online.unit4.nl/' . static::API_VERSION_NUMBER . '/';
+            return 'https://sandbox.api.online.unit4.nl/' . $this->apiVersion . '/';
         }
 
-        return 'https://api.online.unit4.nl/' . static::API_VERSION_NUMBER . '/';
+        return 'https://api.online.unit4.nl/' . $this->apiVersion . '/';
     }
 
-    public function getRedirectUri()
+    public function getRedirectUri(
+    )            // todo: this shouldn't be in this class anymore. The url is only used once, in the registration process
     {
         // XXX: this value must match the exact value specified in the app registration, otherwise it won't work
         if ($this->debug) {
@@ -75,35 +65,47 @@ class Configuration     // todo: rewrite class so it uses a settings file or som
 
     public function getApiRoute($suffix = '')
     {
-        $apiUri = $this->getApiUri() . 'api/' . static::DATABASE . '/';
-        return (!empty($suffix)) ? $apiUri . $suffix . '/' : $apiUri;
+        $apiRoute = $this->getapiRoute() . 'api/' . $this->database . '/';
+        return (!empty($suffix)) ? $apiRoute . $suffix . '/' : $apiRoute;
     }
 
     public function hasToken()
     {
-        if (!file_exists(static::TOKEN_FILE)) {
+        if (empty($this->token)) {
             return false;
         }
 
-        $token = $this->retrieveToken();
-        
+        $token = $this->getToken();
+
         return !empty($token);
     }
 
-    public function storeToken($token)
+    public function getToken()
     {
-        file_put_contents(static::TOKEN_FILE, $token);
-        return $this;
+        return $this->token;
     }
 
-    public function retrieveToken()
+    /**
+     * @return string
+     */
+    public function getClientId()
     {
-        if (!file_exists(static::TOKEN_FILE)) {
-            throw new \Exception('Token bestaat nog niet');
-        }
-
-        return file_get_contents(static::TOKEN_FILE);
+        return $this->clientId;
     }
 
+    /**
+     * @return string
+     */
+    public function getClientSecret()
+    {
+        return $this->clientSecret;
+    }
 
+    /**
+     * @return string
+     */
+    public function getDatabase()
+    {
+        return $this->database;
+    }
 }
