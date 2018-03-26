@@ -1,4 +1,5 @@
 <?php
+
 namespace Unit4;
 
 use Unit4\Configuration;
@@ -12,6 +13,6 @@ abstract class AbstractApiEndpoint
     public function __construct(Configuration $configuration, ApiClient $apiClient)
     {
         $this->configuration = $configuration;
-        $this->apiClient = $apiClient;
+        $this->apiClient     = $apiClient;
     }
 }
