@@ -7,13 +7,10 @@
     "multivers",
     "library"
   ],
-  "homepage": "",
-  "license": "",
   "authors": [
     {
       "name": "Jordy Verschoor",
-      "email": "jordy.verschoor@gmail.com",
-      "homepage": ""
+      "email": "jordy.verschoor@gmail.com"
     }
   ],
   "require": {
@@ -36,7 +33,5 @@
   "suggest": {
   },
   "extra": {
-    "branch-alias": {
-    }
   }
 }
