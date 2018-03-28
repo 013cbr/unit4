@@ -19,10 +19,11 @@
     "guzzlehttp/guzzle": "^6.3"
   },
   "require-dev": {
+    "phpspec/prophecy": "^1.7"
   },
   "autoload": {
     "psr-4": {
-      "Unit4\\": "src/"
+      "Unit4\\": "src/Unit4/"
     }
   },
   "autoload-dev": {
