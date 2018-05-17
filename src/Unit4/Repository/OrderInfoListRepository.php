@@ -15,7 +15,7 @@ class OrderInfoListRepository extends AbstractApiEndpoint
      * @return array
      * @throws \Exception
      */
-    public function find($id, $criteria = [])
+    public function findByCustomerId($id, $criteria = [])
     {
         $query = $this->buildQuery($criteria);
 

@@ -7,7 +7,14 @@ class CustomerPersonNVL extends AbstractApiEndpoint
 {
     const API_SUFFIX = 'CustomerPersonNVL';
 
-    // todo: add documentation. Does it return persons or customers? Etc.
+    /**
+     * Gets a name/value list of CustomerPersonNVL
+     *
+     * @param int $id The Customer ID
+     *
+     * @return mixed
+     * @throws \Exception
+     */
     public function find($id)
     {
         if (empty($id)) {
