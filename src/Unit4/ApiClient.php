@@ -50,7 +50,15 @@ class ApiClient
         return $this;
     }
 
-    // todo: add documentation
+    /**
+     * @param string $url
+     * @param int    $id
+     * @param array  $query
+     * @param bool   $debug
+     *
+     * @return \Psr\Http\Message\StreamInterface
+     * @throws \Exception
+     */
     public function request($url, $id = null, $query = [], $debug = false)
     {
         $response = $this->client->request(

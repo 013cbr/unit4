@@ -9,6 +9,14 @@ class CustomerRepository extends AbstractApiEndpoint
 {
     const API_SUFFIX = 'Customer';
 
+    /**
+     * Fetch a customer from Unit4, by ID
+     *
+     * @param int $id
+     *
+     * @return CustomerEntity
+     * @throws \Exception
+     */
     public function find($id)
     {
         if (empty($id)) {

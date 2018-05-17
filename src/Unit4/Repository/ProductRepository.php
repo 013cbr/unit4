@@ -1,4 +1,5 @@
 <?php
+
 namespace Unit4\Repository;
 
 use Unit4\AbstractApiEndpoint;
@@ -10,9 +11,10 @@ class ProductRepository extends AbstractApiEndpoint
     const API_SUFFIX = 'Product';
 
     /**
-     * Product: Fetch a product from Unit4, by ID
+     * Fetch a product from Unit4, by ID
      *
-     * @param $id
+     * @param int $id
+     *
      * @return ProductEntity
      * @throws \Exception
      */
@@ -29,9 +31,9 @@ class ProductRepository extends AbstractApiEndpoint
 
         $decodedResponse = json_decode($response, true);
 
-        $config = new Configuration('Unit4\Entity\ProductEntity');
+        $config        = new Configuration('Unit4\Entity\ProductEntity');
         $hydratorClass = $config->createFactory()->getHydratorClass();
-        $hydrator = new $hydratorClass();
+        $hydrator      = new $hydratorClass();
 
         $product = new ProductEntity();
         $hydrator->hydrate(

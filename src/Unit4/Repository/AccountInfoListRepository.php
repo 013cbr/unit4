@@ -7,7 +7,7 @@ class AccountInfoListRepository extends AbstractApiEndpoint
 {
     const API_SUFFIX = 'AccountInfoList';
 
-    public function get($year = 0)
+    public function findByYear($year = 0)
     {
         if (empty($year)) {
             $year = date('Y');

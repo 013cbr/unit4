@@ -7,7 +7,7 @@ class PaymentConditionNVL extends AbstractApiEndpoint
 {
     const API_SUFFIX = 'PaymentConditionNVL';
 
-    public function get()
+    public function findAll()
     {
         $response = $this->apiClient->request(
             $this->configuration->getApiRoute(static::API_SUFFIX)

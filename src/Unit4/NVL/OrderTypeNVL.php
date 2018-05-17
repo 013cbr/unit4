@@ -7,7 +7,7 @@ class OrderTypeNVL extends AbstractApiEndpoint
 {
     const API_SUFFIX = 'OrderTypeNVL';
 
-    public function get()
+    public function findAll()
     {
         $response = $this->apiClient->request(
             $this->configuration->getApiRoute(static::API_SUFFIX)

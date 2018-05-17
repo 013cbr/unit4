@@ -8,7 +8,7 @@ class ProductGroupRepository extends AbstractApiEndpoint
 {
     const API_SUFFIX = 'ProductGroup';
 
-    public function get($id)
+    public function find($id)
     {
         if (empty($id)) {
             throw new Exception('Product ID ontbreekt');

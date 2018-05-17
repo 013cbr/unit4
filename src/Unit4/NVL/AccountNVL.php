@@ -7,7 +7,15 @@ class AccountNVL extends AbstractApiEndpoint
 {
     const API_SUFFIX = 'AccountNVL';
 
-    public function get($year = 0)
+    /**
+     * AccountNVL: returns all accounts ("grootboekrekeningen") for a specific year
+     *
+     * @param int $year Year in 4-digit format. Uses the current year if left empty
+     *
+     * @return mixed
+     * @throws \Exception
+     */
+    public function findByYear($year = null)
     {
         if (empty($year)) {
             $year = date('Y');

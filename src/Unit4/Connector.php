@@ -16,7 +16,7 @@ class Connector
         $this->configuration = $configuration;
     }
 
-    public function redirectToAuthorizationUri($redirect = true)
+    public function getAuthorizationUri()
     {
         $authorizationUrl = $this->configuration->getAuthorizeUri()
             . '?client_id=' . rawurlencode($this->configuration->getClientId())
@@ -24,12 +24,15 @@ class Connector
             . '&redirect_uri=' . rawurlencode($this->configuration->getRedirectUri())
             . '&response_type=code';
 
-        if ($redirect) {
-            header('Location: ' . $authorizationUrl);
-            exit;
-        }
-
         return $authorizationUrl;
+    }
+
+    public function redirectToAuthorizationUri()
+    {
+        $authorizationUrl = $this->getAccessToken();
+
+        header('Location: ' . $authorizationUrl);
+        exit;
     }
 
     protected function createStringFromParameters($parameters)
@@ -129,11 +132,7 @@ class Connector
 
             return $accessToken;
         } catch (\Exception $e) {
-            if (is_testing()) {
-                throw new \Exception('AccessToken kon niet worden opgevraagd (' . $e->getMessage() . ')');
-            } else {
-                throw new \Exception('AccessToken kon niet worden opgevraagd');
-            }
+            throw new \Exception('AccessToken kon niet worden opgevraagd');
         }
     }
 

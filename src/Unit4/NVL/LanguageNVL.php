@@ -13,7 +13,7 @@ class LanguageNVL extends AbstractApiEndpoint
      * @return array
      * @throws \Exception
      */
-    public function get()
+    public function findAll()
     {
         $response = $this->apiClient->request(
             $this->configuration->getApiRoute(static::API_SUFFIX)

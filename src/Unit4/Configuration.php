@@ -36,8 +36,7 @@ class Configuration
         return 'https://api.online.unit4.nl/' . $this->apiVersion . '/';
     }
 
-    public function getRedirectUri(
-    )            // todo: this shouldn't be in this class anymore. The url is only used once, in the registration process
+    public function getRedirectUri()   // todo: this shouldn't be in this class anymore. The url is only used once, in the registration process
     {
         // XXX: this value must match the exact value specified in the app registration, otherwise it won't work
         if ($this->debug) {

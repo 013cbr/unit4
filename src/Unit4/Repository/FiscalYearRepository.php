@@ -7,7 +7,7 @@ class FiscalYearRepository extends AbstractApiEndpoint
 {
     const API_SUFFIX = 'FiscalYearInfoList';
 
-    public function getInfoList()
+    public function findAll()
     {
         $response = $this->apiClient->request(
             $this->configuration->getApiRoute(static::API_SUFFIX)

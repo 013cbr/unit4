@@ -13,7 +13,7 @@ class CostUnitNVL extends AbstractApiEndpoint
      * @return array List of costUnits
      * @throws \Exception
      */
-    public function get()
+    public function findAll()
     {
         $response = $this->apiClient->request(
             $this->configuration->getApiRoute(static::API_SUFFIX)

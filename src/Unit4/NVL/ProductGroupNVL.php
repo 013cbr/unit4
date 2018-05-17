@@ -7,7 +7,7 @@ class ProductGroupNVL extends AbstractApiEndpoint
 {
     const API_SUFFIX = 'ProductGroupNVL';
 
-    public function get()
+    public function findAll()
     {
         $response = $this->apiClient->request(
             $this->configuration->getApiRoute(static::API_SUFFIX)

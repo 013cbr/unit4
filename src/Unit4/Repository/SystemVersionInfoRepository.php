@@ -7,7 +7,7 @@ class SystemVersionInfoRepository extends AbstractApiEndpoint
 {
     const API_SUFFIX = 'SystemVersionInfo';
 
-    public function get()
+    public function find()
     {
         $response = $this->apiClient->request(
             $this->configuration->getApiUri() . 'api/' . static::API_SUFFIX     // XXX: this URI does NOT need the database
