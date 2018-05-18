@@ -16,7 +16,10 @@ class QueryBuilderTest extends PHPUnit_Framework_TestCase
             $qb->expr()->eq('CocRegistration', $registrationNumber)
         );
 
-        $this->assertEquals("CocRegistration eq " . $registrationNumber, $qb->getQuery());
+        $this->assertEquals(
+            ['$filter' => "CocRegistration eq " . $registrationNumber],
+            $qb->getQuery()
+        );
     }
 
     public function testBasicEqualQueryWithLiteral()
@@ -31,12 +34,14 @@ class QueryBuilderTest extends PHPUnit_Framework_TestCase
             )
         );
 
-        $this->assertEquals("CocRegistration eq '" . $registrationNumber . "'", $qb->getQuery());
+        $this->assertEquals(
+            ['$filter' => "CocRegistration eq '" . $registrationNumber . "'"],
+            $qb->getQuery()
+        );
     }
 
     public function testQueryWithOr()
     {
-        return;
         $qb = new QueryBuilder();
         $qb->orWhere(
             $qb->expr()->eq(
@@ -49,11 +54,50 @@ class QueryBuilderTest extends PHPUnit_Framework_TestCase
             )
         );
 
-        print_r($qb->getParts());      // TODO: remove this line
-        print_r($qb->getQuery());      // TODO: remove this line
+        $this->assertEquals(
+            ['$filter' => "CocRegistration eq someValue or tolower(Email) eq emailaddress"],
+            $qb->getQuery()
+        );
+    }
+
+    public function testComplexQueryWithAnd()
+    {
+        $qb = new QueryBuilder();
+        $qb->andWhere(
+            $qb->expr()->eq(
+                'CocRegistration',
+                'someValue'
+            ),
+            $qb->expr()->orX(
+                $qb->expr()->eq(
+                    $qb->expr()->lower('Email'),
+                    'aaa@domain.com'
+                ),
+                $qb->expr()->eq(
+                    $qb->expr()->lower('Email'),
+                    $qb->expr()->literal('bbb@domain.com')
+                )
+            )
+        );
 
         $this->assertEquals(
-            "CocRegistration eq someValue or tolower(Email) eq emailaddress",
+            ['$filter' => "CocRegistration eq someValue and (tolower(Email) eq aaa@domain.com or tolower(Email) eq 'bbb@domain.com')"],
+            $qb->getQuery()
+        );
+    }
+
+    public function testAddingCriteriaSeperately()
+    {
+        $qb = new QueryBuilder();
+        $qb->orWhere(
+            $qb->expr()->eq('CocRegistration', '1234567')
+        );
+        $qb->orWhere(
+            $qb->expr()->eq($qb->expr()->lower('Email'), $qb->expr()->literal('aaa@domain.com'))
+        );
+
+        $this->assertEquals(
+            ['$filter' => "CocRegistration eq 1234567 or tolower(Email) eq 'aaa@domain.com'"],
             $qb->getQuery()
         );
     }

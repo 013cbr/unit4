@@ -2,12 +2,12 @@
 namespace Unit4\Repository;
 
 use Unit4\AbstractApiEndpoint;
+use Unit4\Query\QueryBuilder;
 
 class CustomerInfoListRepository extends AbstractApiEndpoint
 {
     const API_SUFFIX = 'CustomerInfoList';
 
-    // todo: write documentation. Possibly write criteria into a separate object ?
     public function findBy($criteria = [])
     {
         $query = $this->buildQuery($criteria);
@@ -25,19 +25,20 @@ class CustomerInfoListRepository extends AbstractApiEndpoint
 
     private function buildQuery($criteria = [])
     {
-        $query = [];
+        $qb = new QueryBuilder();
 
-        if (!empty($criteria['email'])) {     // xxx: use validation to check if it's also a valid email address ?
-            $query['$filter'] = "tolower(Email) eq '" . strtolower($criteria['email']) . "'";
+        if (!empty($criteria['email'])) {
+            $qb->orWhere(
+                $qb->expr()->eq($qb->expr()->lower('Email'), $qb->expr()->literal($criteria['email']))
+            );
         }
 
         if (!empty($criteria['kvk'])) {
-            if (!empty($query['$filter'])) {        // todo: split this off
-                $query['$filter'] .= " or ";
-            }
-            $query['$filter'] .= "CocRegistration eq '" . $criteria['kvk'] . "'";
+            $qb->orWhere(
+                $qb->expr()->eq('CocRegistration', $qb->expr()->literal((string)$criteria['kvk']))
+            );
         }
 
-        return $query;
+        return $qb->getQuery();
     }
 }

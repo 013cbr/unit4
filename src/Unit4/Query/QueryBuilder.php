@@ -3,6 +3,7 @@
 namespace Unit4\Query;
 
 use Unit4\Query\Expression\Andx;
+use Unit4\Query\Expression\OrderBy;
 use Unit4\Query\Expression\Orx;
 
 /**
@@ -34,7 +35,10 @@ class QueryBuilder
 
     public function __construct()
     {
-        $this->parts = [];
+        $this->parts = [
+            'where'   => null,
+            'orderBy' => $this->resetOrderBy(),
+        ];
     }
 
     public function expr()
@@ -52,24 +56,36 @@ class QueryBuilder
         return $this;
     }
 
+    public function addOrderBy($sort, $order = null)
+    {
+        $orderBy = ($sort instanceof OrderBy) ? $sort : new OrderBy($sort, $order);
+        return $this->add('orderBy', $orderBy, true);
+    }
+
+    public function resetOrderBy()
+    {
+        $this->parts['orderBy'] = [];
+    }
+
     public function andWhere()
     {
         $args  = func_get_args();
-        $where = $this->parts;
+        $where = $this->parts['where'];
 
-        if ($where instanceof Andx) {
+        if ($where instanceof Orx) {
             $where->addMultiple($args);
         } else {
             array_unshift($args, $where);
             $where = new Andx($args);
         }
-        return $this->add($where);
+
+        return $this->add('where', $where);
     }
 
     public function orWhere()
     {
         $args  = func_get_args();
-        $where = $this->parts;
+        $where = $this->parts['where'];
 
         if ($where instanceof Orx) {
             $where->addMultiple($args);
@@ -77,12 +93,13 @@ class QueryBuilder
             array_unshift($args, $where);
             $where = new Orx($args);
         }
-        return $this->add($where);
+
+        return $this->add('where', $where);
     }
 
-    private function add($part, $append = false)
+    private function add($partName, $part, $append = false)
     {
-        $isMultiple = is_array($this->parts);
+        $isMultiple = is_array($this->parts[$partName]);
 
         if (is_array($part)) {
             $part = reset($part);
@@ -90,13 +107,13 @@ class QueryBuilder
 
         if ($append && $isMultiple) {
             if (is_array($part)) {
-                $key                 = key($part);
-                $this->parts[$key][] = $part[$key];
+                $key                            = key($part);
+                $this->parts[$partName][$key][] = $part[$key];
             } else {
-                $this->parts[] = $part;
+                $this->parts[$partName][] = $part;
             }
         } else {
-            $this->parts = ($isMultiple) ? array($part) : $part;
+            $this->parts[$partName] = ($isMultiple) ? array($part) : $part;
         }
 
         return $this;
@@ -104,18 +121,22 @@ class QueryBuilder
 
     public function getQuery()
     {
-        if (empty($this->parts)) {
-            return '';
+        $query = [];
+
+        if (!empty($this->parts['where'])) {
+            $query['$filter'] = (is_array($this->parts['where']) ? implode('',
+                $this->parts['where']) : $this->parts['where']->__toString());
         }
 
-        $query = (is_array($this->parts) ? implode('', $this->parts) : $this->parts);
-//        $query->setMaxResults($this->maxResults);     // TODO: add this to the query
+        if (!empty($this->maxResults)) {
+            $query['$top'] = $this->maxResults;
+        }
+
+        if (!empty($this->parts['orderBy'])) {
+            $query['$orderby'] = (is_array($this->parts['orderBy']) ? implode(', ',
+                $this->parts['orderBy']) : $this->parts['orderBy']->__toString());
+        }
 
         return $query;
-    }
-
-    public function getParts()
-    {
-        return $this->parts;
     }
 }

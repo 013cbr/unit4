@@ -2,6 +2,8 @@
 namespace Unit4\Repository;
 
 use Unit4\AbstractApiEndpoint;
+use Unit4\Query\Expression\OrderBy;
+use Unit4\Query\QueryBuilder;
 
 class OrderInfoListRepository extends AbstractApiEndpoint
 {
@@ -15,9 +17,9 @@ class OrderInfoListRepository extends AbstractApiEndpoint
      * @return array
      * @throws \Exception
      */
-    public function findByCustomerId($id, $criteria = [])
+    public function findByCustomerId($id, $criteria = [], $orderBy = [])
     {
-        $query = $this->buildQuery($criteria);
+        $query = $this->buildQuery($criteria, $orderBy);
 
         $response = $this->apiClient->request(
             $this->configuration->getApiRoute(static::API_SUFFIX),
@@ -30,21 +32,23 @@ class OrderInfoListRepository extends AbstractApiEndpoint
         return $decodedResponse;
     }
 
-    protected function buildQuery($criteria = [])
+    protected function buildQuery($criteria = [], $orderBy = [])
     {
-        $query = [
-            '$orderby' => "OrderDate desc",
-            '$top' => 5,            // todo: make this flexible
-        ];
+        $qb = new QueryBuilder();
+        $qb->setMaxResults(5);
+        $qb->addOrderBy('OrderDate', OrderBy::SORT_ORDER_DESC);
 
         if (!empty($criteria['limit'])) {
-            $query['$top'] = $criteria['limit'];
+            $qb->setMaxResults($criteria['limit']);
         }
 
-        if (!empty($criteria['orderby'])) {
-            $query['$orderby'] = $criteria['orderby'];
+        if (!empty($orderBy)) {
+            $qb->resetOrderBy();
+            foreach ($orderBy as $key => $sortOrder) {
+                $qb->addOrderBy($key, $sortOrder);
+            }
         }
 
-        return $query;
+        return $qb->getQuery();
     }
 }

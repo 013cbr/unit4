@@ -32,7 +32,7 @@ class Composite extends Base
         }
 
         // Fixes a possible issue where item would contain nested expression (with "OR" or "AND")
-        if (stripos($queryPart, ' OR ') !== false || stripos($queryPart, ' AND ') !== false) {
+        if (stripos($queryPart, ' or ') !== false || stripos($queryPart, ' and ') !== false) {
             return $this->preSeparator . $queryPart . $this->postSeparator;
         }
         return $queryPart;
