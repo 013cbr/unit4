@@ -64,7 +64,7 @@ class Configuration
 
     public function getApiRoute($suffix = '')
     {
-        $apiRoute = $this->getapiRoute() . 'api/' . $this->database . '/';
+        $apiRoute = $this->getapiUri() . 'api/' . $this->database . '/';
         return (!empty($suffix)) ? $apiRoute . $suffix . '/' : $apiRoute;
     }
 
