@@ -29,7 +29,7 @@ class Connector
 
     public function redirectToAuthorizationUri()
     {
-        $authorizationUrl = $this->getAccessToken();
+        $authorizationUrl = $this->getAuthorizationUri();
 
         header('Location: ' . $authorizationUrl);
         exit;
